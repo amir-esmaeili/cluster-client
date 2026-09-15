@@ -1,0 +1,125 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cluster-client-create-group
+  namespace: default
+spec:
+  # Clean up completed jobs after 1 hour
+  ttlSecondsAfterFinished: 3600
+
+  # Don't retry on failure - let the operator decide
+  backoffLimit: 0
+
+  template:
+    metadata:
+      labels:
+        app: cluster-client
+    spec:
+      restartPolicy: Never
+
+      # Service account for potential RBAC (future extensibility)
+      serviceAccountName: default
+
+      containers:
+      - name: cluster-client
+        image: cluster-client:latest
+        imagePullPolicy: IfNotPresent
+
+        # Override these when running:
+        # kubectl create job --from=job/cluster-client-create-group my-job -- create --group-id my-group
+        args:
+          - "create"
+          - "--group-id"
+          - "example-group"
+
+        # Load configuration from ConfigMap
+        envFrom:
+          - configMapRef:
+              name: cluster-client-config
+
+        # Optional: Load secrets for future auth requirements
+        # env:
+        #   - name: API_TOKEN
+        #     valueFrom:
+        #       secretKeyRef:
+        #         name: cluster-client-secret
+        #         key: api-token
+
+        # Resource limits
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+
+        # Security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+              - ALL
+
+      # Pod security context
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cluster-client-delete-group
+  namespace: default
+spec:
+  ttlSecondsAfterFinished: 3600
+  backoffLimit: 0
+
+  template:
+    metadata:
+      labels:
+        app: cluster-client
+    spec:
+      restartPolicy: Never
+      serviceAccountName: default
+
+      containers:
+      - name: cluster-client
+        image: cluster-client:latest
+        imagePullPolicy: IfNotPresent
+
+        args:
+          - "delete"
+          - "--group-id"
+          - "example-group"
+
+        envFrom:
+          - configMapRef:
+              name: cluster-client-config
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+              - ALL
+
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault

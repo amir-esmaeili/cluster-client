@@ -1,0 +1,11 @@
+.mypy_cache
+.pytest_cache
+.ruff_cache
+README.pdf
+DOC.md
+venv
+htmlcov
+.coverage
+QIUCKSTART.md
+TESTING.pdf
+start_mock_cluster.bat

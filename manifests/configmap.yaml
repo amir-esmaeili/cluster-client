@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-client-config
+  namespace: default
+data:
+  # Cluster node hostnames (comma-separated)
+  HOSTS: "node1.example.com,node2.example.com,node3.example.com"
+
+  # HTTP timeout settings
+  CONNECT_TIMEOUT: "5.0"
+  READ_TIMEOUT: "30.0"
+
+  # Retry configuration
+  MAX_RETRY_ATTEMPTS: "3"
+  BASE_BACKOFF_DELAY: "1.0"
+
+  # Behavior flags
+  TREAT_CREATE_CONFLICT_AS_SUCCESS: "false"
+
+  # Logging
+  LOG_LEVEL: "INFO"
