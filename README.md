@@ -21,19 +21,19 @@ The library handles transient failures through automatic retry with exponential 
 
 ### High-Level Architecture
 
-![High-Level Architecture](assets\image.png)
+![High-Level Architecture](\assets\image.png)
 
 ### Component Architecture
 
-![Component Architecture](assets\image2.jpg)
+![Component Architecture](\assets\image2.jpg)
 
 ### Create Operation Flow
 
-![Create Operation Flow](assets\image3.jpg)
+![Create Operation Flow](\assets\image3.jpg)
 
 ### Retry Logic Flow
 
-![Retry Logic Flow](assets\image4.jpg)
+![Retry Logic Flow](\assets\image4.jpg)
 
 ## Installation
 
